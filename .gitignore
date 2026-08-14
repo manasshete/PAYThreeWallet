@@ -1,0 +1,51 @@
+# dependencies
+node_modules
+.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# next.js
+**/.next/
+/out/
+
+# production
+**/dist/
+/build
+
+# env / secrets
+.env
+.env*.local
+!.env.example
+!**/.env.example
+
+# Cursor MCP token (use mcp.json.example)
+.cursor/mcp.json
+
+# vercel
+.vercel
+
+# API serverless bundle (scripts/bundle-api.mjs)
+api/server.cjs
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# typescript
+**/next-env.d.ts
+
+# local db
+*.db
+*.db-journal
+
+.vercel
+.env*

@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="620" viewBox="0 0 1200 620">
+  <rect width="1200" height="620" fill="#0d0d0e"/>
+  <text x="48" y="48" fill="#8a8a8e" font-family="ui-monospace,monospace" font-size="13" letter-spacing="4">SYSTEM DESIGN</text>
+  <text x="48" y="88" fill="#ffffff" font-family="system-ui,sans-serif" font-size="28" font-weight="700">Pay3 - end-to-end architecture</text>
+
+  <text x="48" y="140" fill="#8a8a8e" font-family="ui-monospace,monospace" font-size="11">CLIENTS</text>
+  <rect x="48" y="152" width="200" height="64" rx="12" fill="#1a1a1c" stroke="#ffffff" stroke-opacity="0.25"/>
+  <text x="148" y="180" text-anchor="middle" fill="#ffffff" font-family="system-ui,sans-serif" font-size="14" font-weight="600">Web / Dashboard</text>
+  <text x="148" y="200" text-anchor="middle" fill="#8a8a8e" font-family="system-ui,sans-serif" font-size="11">Next.js + Freighter</text>
+
+  <rect x="268" y="152" width="200" height="64" rx="12" fill="#1a1a1c" stroke="#ffffff" stroke-opacity="0.25"/>
+  <text x="368" y="180" text-anchor="middle" fill="#ffffff" font-family="system-ui,sans-serif" font-size="14" font-weight="600">AI (Cursor / Claude)</text>
+  <text x="368" y="200" text-anchor="middle" fill="#8a8a8e" font-family="system-ui,sans-serif" font-size="11">MCP tools</text>
+
+  <text x="520" y="140" fill="#8a8a8e" font-family="ui-monospace,monospace" font-size="11">CONTROL PLANE</text>
+  <rect x="520" y="152" width="160" height="56" rx="10" fill="#1a1a1c" stroke="#ffffff" stroke-opacity="0.25"/>
+  <text x="600" y="185" text-anchor="middle" fill="#ffffff" font-family="system-ui,sans-serif" font-size="13">Policy Engine</text>
+  <rect x="700" y="152" width="160" height="56" rx="10" fill="#1a1a1c" stroke="#ffffff" stroke-opacity="0.25"/>
+  <text x="780" y="185" text-anchor="middle" fill="#ffffff" font-family="system-ui,sans-serif" font-size="13">Tx Engine</text>
+  <rect x="880" y="152" width="160" height="56" rx="10" fill="#1a1a1c" stroke="#ffffff" stroke-opacity="0.25"/>
+  <text x="960" y="185" text-anchor="middle" fill="#ffffff" font-family="system-ui,sans-serif" font-size="13">Recipients</text>
+
+  <rect x="520" y="228" width="160" height="56" rx="10" fill="#1a1a1c" stroke="#ffffff" stroke-opacity="0.25"/>
+  <text x="600" y="261" text-anchor="middle" fill="#ffffff" font-family="system-ui,sans-serif" font-size="13">Session Mgr</text>
+  <rect x="700" y="228" width="160" height="56" rx="10" fill="#1a1a1c" stroke="#ffffff" stroke-opacity="0.25"/>
+  <text x="780" y="261" text-anchor="middle" fill="#ffffff" font-family="system-ui,sans-serif" font-size="13">Soroswap</text>
+  <rect x="880" y="228" width="160" height="56" rx="10" fill="#1a1a1c" stroke="#ffffff" stroke-opacity="0.25"/>
+  <text x="960" y="261" text-anchor="middle" fill="#ffffff" font-family="system-ui,sans-serif" font-size="13">@pay3/stellar</text>
+
+  <text x="48" y="260" fill="#8a8a8e" font-family="ui-monospace,monospace" font-size="11">API EDGE</text>
+  <rect x="48" y="272" width="420" height="72" rx="12" fill="#1a1a1c" stroke="#ffffff" stroke-opacity="0.35"/>
+  <text x="258" y="302" text-anchor="middle" fill="#ffffff" font-family="system-ui,sans-serif" font-size="15" font-weight="600">Express API - pay3-api.vercel.app</text>
+  <text x="258" y="324" text-anchor="middle" fill="#8a8a8e" font-family="ui-monospace,monospace" font-size="11">auth / sessions / MCP HTTP / policy</text>
+
+  <text x="48" y="400" fill="#8a8a8e" font-family="ui-monospace,monospace" font-size="11">DATA</text>
+  <rect x="48" y="412" width="280" height="64" rx="12" fill="#1a1a1c" stroke="#ffffff" stroke-opacity="0.25"/>
+  <text x="188" y="440" text-anchor="middle" fill="#ffffff" font-family="system-ui,sans-serif" font-size="14" font-weight="600">Neon Postgres</text>
+  <text x="188" y="460" text-anchor="middle" fill="#8a8a8e" font-family="ui-monospace,monospace" font-size="11">Prisma + AES-GCM secrets</text>
+
+  <text x="380" y="400" fill="#8a8a8e" font-family="ui-monospace,monospace" font-size="11">CUSTODY</text>
+  <rect x="380" y="412" width="200" height="64" rx="12" fill="#1a1a1c" stroke="#ffffff" stroke-opacity="0.35"/>
+  <text x="480" y="440" text-anchor="middle" fill="#ffffff" font-family="system-ui,sans-serif" font-size="14" font-weight="600">AI jar (G / C)</text>
+  <text x="480" y="460" text-anchor="middle" fill="#8a8a8e" font-family="ui-monospace,monospace" font-size="11">legacy + Zipper canary</text>
+
+  <text x="640" y="400" fill="#8a8a8e" font-family="ui-monospace,monospace" font-size="11">CHAIN</text>
+  <rect x="640" y="412" width="280" height="64" rx="12" fill="#1a1a1c" stroke="#ffffff" stroke-opacity="0.35"/>
+  <text x="780" y="440" text-anchor="middle" fill="#ffffff" font-family="system-ui,sans-serif" font-size="14" font-weight="600">Stellar + Soroban</text>
+  <text x="780" y="460" text-anchor="middle" fill="#8a8a8e" font-family="ui-monospace,monospace" font-size="11">Horizon / RPC / Friendbot</text>
+
+  <line x1="148" y1="216" x2="148" y2="272" stroke="#ffffff" stroke-opacity="0.35" stroke-width="2"/>
+  <line x1="368" y1="216" x2="258" y2="272" stroke="#ffffff" stroke-opacity="0.35" stroke-width="2"/>
+  <line x1="258" y1="344" x2="188" y2="412" stroke="#ffffff" stroke-opacity="0.35" stroke-width="2"/>
+  <line x1="300" y1="344" x2="480" y2="412" stroke="#ffffff" stroke-opacity="0.35" stroke-width="2"/>
+  <line x1="780" y1="284" x2="780" y2="412" stroke="#ffffff" stroke-opacity="0.35" stroke-width="2"/>
+
+  <text x="48" y="540" fill="#8a8a8e" font-family="ui-monospace,monospace" font-size="12">Policy: AUTO / APPROVAL / REJECT  |  Secrets stay in API vault  |  Primary Freighter key never stored</text>
+  <line x1="48" y1="560" x2="520" y2="560" stroke="#ffffff" stroke-opacity="0.15"/>
+  <text x="48" y="590" fill="#ffffff" font-family="ui-monospace,monospace" font-size="13" opacity="0.55">paythreewallet.vercel.app</text>
+</svg>

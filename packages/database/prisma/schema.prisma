@@ -1,0 +1,228 @@
+generator client {
+  provider      = "prisma-client-js"
+  // ponytail: Vercel serverless + local Windows; upgrade if hosts change
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  wallet        Wallet?
+  smartAccount  SmartAccount?
+  aiSessions    AiSession[]
+  policies      Policy[]
+  contacts      Contact[]
+  transactions  Transaction[]
+  approvals     ApprovalRequest[]
+  usageRecords  UsageRecord[]
+  auditLogs     AuditLog[]
+}
+
+model Wallet {
+  id        String   @id @default(cuid())
+  publicKey String   @unique
+  userId    String   @unique
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model SmartAccount {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  /// Public G-address of allocation account (interim / rollback)
+  publicKey       String?
+  /// AES-GCM encrypted G-secret — never returned to clients; retained for rollback
+  encryptedSecret String?
+  /// Soroban contract id (`C…`) when custodyMode=contract; else may mirror G
+  contractRef     String?
+  /// legacy = interim G-account; contract = Soroban custom account
+  custodyMode     String   @default("legacy")
+  /// Deployed WASM version tag (e.g. phase9c-v1)
+  contractVersion String?
+  /// Network passphrase short name (testnet / future mainnet)
+  contractNetwork String?
+  /// SHA-256 hex of deployed WASM
+  wasmHash        String?
+  /// Deployment transaction hash (no secrets)
+  deployTxHash    String?
+  status          String   @default("pending")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Contact {
+  id             String   @id @default(cuid())
+  userId         String
+  name           String
+  stellarAddress String
+  verified       Boolean  @default(false)
+  createdAt      DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, name])
+  @@index([userId])
+}
+
+model Policy {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  rulesJson Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  aiSessions AiSession[]
+}
+
+model AiSession {
+  id                  String    @id @default(cuid())
+  userId              String
+  policyId            String?
+  clientType          String
+  label               String?
+  /// Session keypair public key (safe to expose)
+  sessionPublicKey    String?
+  /// AES-GCM encrypted session secret — never returned to clients
+  encryptedSessionKey String?
+  /// SHA-256 of MCP API token (plaintext shown once on create)
+  mcpTokenHash        String?   @unique
+  /// pending_onchain | active | revocation_pending | revoked | expired
+  status              String    @default("pending")
+  expiresAt           DateTime?
+  /// Ledger sequence when on-chain session expires
+  expiresLedger       Int?
+  revokedAt           DateTime?
+  /// add_session confirmation hash
+  onchainRegisterTxHash String?
+  /// revoke_session confirmation hash
+  onchainRevokeTxHash   String?
+  /// Policy rules fingerprint / version for audit
+  policyVersion       String?
+  createdAt           DateTime  @default(now())
+
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  policy       Policy?       @relation(fields: [policyId], references: [id])
+  transactions Transaction[]
+
+  @@index([userId, status])
+}
+
+enum TransactionStatus {
+  CREATED
+  VALIDATING
+  AUTO_APPROVED
+  PENDING_APPROVAL
+  SIGNING
+  SUBMITTING
+  SUCCESS
+  FAILED
+  REJECTED
+  EXPIRED
+  CANCELLED
+}
+
+model Transaction {
+  id                    String            @id @default(cuid())
+  userId                String
+  sessionId             String?
+  idempotencyKey        String?           @unique
+  action                String
+  asset                 String?
+  amount                String?
+  recipient             String?
+  policyDecision        String?
+  status                TransactionStatus @default(CREATED)
+  stellarTransactionHash String?
+  retryCount            Int               @default(0)
+  createdAt             DateTime          @default(now())
+  completedAt           DateTime?
+
+  user    User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  session AiSession? @relation(fields: [sessionId], references: [id])
+
+  @@index([userId, createdAt])
+}
+
+model ApprovalRequest {
+  id            String    @id @default(cuid())
+  userId        String
+  transactionId String?
+  status        String    @default("pending")
+  expiresAt     DateTime
+  createdAt     DateTime  @default(now())
+  resolvedAt    DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+}
+
+model IdempotencyRecord {
+  id            String   @id @default(cuid())
+  key           String   @unique
+  transactionId String?
+  createdAt     DateTime @default(now())
+}
+
+model UsageRecord {
+  id        String   @id @default(cuid())
+  userId    String
+  month     String
+  txCount   Int      @default(0)
+  volumeUsd String   @default("0")
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, month])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt])
+}
+
+model AuthChallenge {
+  id        String   @id @default(cuid())
+  publicKey String
+  nonce     String   @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([publicKey])
+}
+
+/// Desktop shows QR; phone completes SEP-53; desktop claims cookies
+model QrLoginSession {
+  id         String   @id @default(cuid())
+  status     String   @default("pending")
+  publicKey  String?
+  userId     String?
+  claimToken String?  @unique
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  claimedAt  DateTime?
+
+  @@index([status, expiresAt])
+}

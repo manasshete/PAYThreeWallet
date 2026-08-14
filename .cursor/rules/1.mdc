@@ -1,0 +1,18 @@
+---
+alwaysApply: true
+---
+
+Security Constraints (Non-Negotiable):
+NEVER store, log, or expose the user's primary wallet private key.
+NEVER expose AI session private keys to the frontend, AI models, or API responses. They must be encrypted at rest in the DB and only used in memory by the backend signing logic.
+NEVER guess ambiguous recipients. If a recipient name maps to multiple addresses, the transaction MUST be rejected, and the AI must ask for clarification.
+NEVER automatically retry financial failures (insufficient funds, policy rejection, expired session). Only retry temporary technical/RPC failures.
+Engineering Constraints:
+Keep the MVP focused. Do not build automatic refills, DeFi integrations, or complex microservices yet.
+Do not add Redis, AWS, or complex infrastructure unless a specific, proven technical need arises. Stick to Postgres/Neon for now.
+Separate policy evaluation (off-chain) from transaction execution (on-chain).
+Every financial operation must be treated as security-sensitive and fully auditable.
+Workflow Constraints:
+Always check TECHNICAL_VALIDATION.md before writing or modifying Soroban smart contract code.
+Write tests for the Policy Engine and Transaction Engine, specifically testing idempotency and the 3-level execution model.
+Keep UI components strictly separated from business logic.

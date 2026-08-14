@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pay3 — System Design & README</title>
+  <style>
+    :root {
+      --bg: #050506;
+      --panel: #121214;
+      --panel-2: #1a1a1c;
+      --line: rgba(255, 255, 255, 0.12);
+      --text: #f4f4f5;
+      --muted: #8a8a8e;
+      --soft: #c4c4c8;
+      --accent: #ffffff;
+      --radius: 18px;
+      --font: "Segoe UI", system-ui, -apple-system, sans-serif;
+      --mono: ui-monospace, "Cascadia Code", "SF Mono", Menlo, Consolas, monospace;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      color: var(--text);
+      background:
+        radial-gradient(900px 500px at 80% -10%, rgba(255,255,255,0.08), transparent 55%),
+        radial-gradient(700px 400px at 0% 20%, rgba(255,255,255,0.04), transparent 50%),
+        var(--bg);
+      line-height: 1.55;
+      overflow-x: hidden;
+    }
+
+    .grain {
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      z-index: 0;
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      width: min(1100px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 2.5rem 0 5rem;
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 1rem;
+      margin: 0 0 2rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(5, 5, 6, 0.72);
+      backdrop-filter: blur(16px);
+      animation: rise 0.7s ease both;
+    }
+    .nav a {
+      color: var(--soft);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-family: var(--mono);
+    }
+    .nav a:hover { color: #fff; }
+    .nav-links { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .brand-mark {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      text-decoration: none;
+      color: #fff !important;
+      font-family: var(--font) !important;
+      font-size: 1rem !important;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+    .brand-mark img {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+    }
+    .hero-logo {
+      width: 88px;
+      height: 88px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      margin-bottom: 0.75rem;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.45);
+      animation: floaty 4.5s ease-in-out infinite;
+    }
+    .social-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      margin-top: 1.25rem;
+    }
+    .social {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.55rem 0.9rem;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      color: #fff;
+      text-decoration: none;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      background: rgba(255,255,255,0.03);
+      transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
+    }
+    .social:hover {
+      border-color: rgba(255,255,255,0.4);
+      background: rgba(255,255,255,0.08);
+      transform: translateY(-2px);
+    }
+
+    .hero {
+      display: grid;
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+      animation: rise 0.8s 0.05s ease both;
+    }
+    .hero img.banner {
+      width: 100%;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.45);
+    }
+    .eyebrow {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    h1 {
+      margin: 0.35rem 0 0.5rem;
+      font-size: clamp(2.4rem, 6vw, 4.2rem);
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+    }
+    .lede {
+      max-width: 42rem;
+      font-size: 1.15rem;
+      color: var(--soft);
+    }
+    .cta-row { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1rem; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.7rem 1.15rem;
+      border-radius: 999px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-primary { background: #fff; color: #000; }
+    .btn-ghost { border: 1px solid rgba(255,255,255,0.35); color: #fff; }
+
+    section {
+      margin: 3rem 0;
+      animation: rise 0.7s ease both;
+    }
+    h2 {
+      margin: 0 0 1rem;
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      letter-spacing: -0.03em;
+    }
+    h3 {
+      margin: 1.5rem 0 0.6rem;
+      font-size: 1.1rem;
+      letter-spacing: -0.02em;
+    }
+    p, li { color: var(--soft); }
+    .muted { color: var(--muted); font-size: 0.92rem; }
+
+    .grid-2 {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 1.15rem 1.2rem;
+      transition: border-color 0.25s ease, transform 0.25s ease;
+    }
+    .card:hover {
+      border-color: rgba(255,255,255,0.28);
+      transform: translateY(-3px);
+    }
+    .card strong { color: #fff; }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      padding: 1rem;
+      overflow: auto;
+    }
+    .panel img { width: 100%; display: block; border-radius: 12px; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    th, td {
+      text-align: left;
+      padding: 0.75rem 0.85rem;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+    th { color: var(--muted); font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; }
+    tr:hover td { background: rgba(255,255,255,0.03); }
+
+    .flow {
+      display: grid;
+      gap: 0.75rem;
+      counter-reset: step;
+    }
+    .step {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 1rem;
+      align-items: start;
+      padding: 1rem;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: var(--panel-2);
+      position: relative;
+      overflow: hidden;
+    }
+    .step::before {
+      counter-increment: step;
+      content: counter(step, decimal-leading-zero);
+      font-family: var(--mono);
+      color: var(--muted);
+      font-size: 0.85rem;
+      padding-top: 0.15rem;
+    }
+    .step::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: linear-gradient(#fff, transparent);
+      opacity: 0.35;
+      animation: pulse 2.8s ease-in-out infinite;
+    }
+    .step:nth-child(2)::after { animation-delay: 0.3s; }
+    .step:nth-child(3)::after { animation-delay: 0.6s; }
+    .step:nth-child(4)::after { animation-delay: 0.9s; }
+    .step:nth-child(5)::after { animation-delay: 1.2s; }
+
+    .pill-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; }
+    .pill {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      padding: 0.35rem 0.65rem;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      color: var(--soft);
+      background: rgba(255,255,255,0.03);
+    }
+    .pill.ok { border-color: rgba(255,255,255,0.35); color: #fff; }
+
+    .mono-block {
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      white-space: pre-wrap;
+      color: #d4d4d8;
+      background: #0a0a0b;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 1rem 1.1rem;
+      overflow: auto;
+    }
+
+    .arch {
+      display: grid;
+      gap: 0.65rem;
+    }
+    .lane {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      gap: 0.75rem;
+      align-items: stretch;
+    }
+    .lane-label {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+    }
+    .lane-body {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .node {
+      flex: 1 1 140px;
+      min-width: 120px;
+      padding: 0.85rem 0.9rem;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: var(--panel-2);
+      animation: floaty 4s ease-in-out infinite;
+    }
+    .node:nth-child(2) { animation-delay: 0.4s; }
+    .node:nth-child(3) { animation-delay: 0.8s; }
+    .node:nth-child(4) { animation-delay: 1.2s; }
+    .node b { display: block; color: #fff; margin-bottom: 0.2rem; }
+    .node span { color: var(--muted); font-size: 0.8rem; }
+
+    footer {
+      margin-top: 4rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.85rem;
+      text-align: center;
+    }
+    footer a { color: #fff; }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes floaty {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 0.7; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .lane { grid-template-columns: 1fr; }
+      .nav { border-radius: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="wrap">
+    <nav class="nav">
+      <a class="brand-mark" href="#top">
+        <img src="assets/pay3-logo.png" alt="" />
+        Pay3
+      </a>
+      <div class="nav-links">
+        <a href="https://pay3.mintlify.site">Docs</a>
+        <a href="#system">System</a>
+        <a href="#lifecycle">Lifecycle</a>
+        <a href="#security">Security</a>
+        <a href="#stack">Stack</a>
+        <a href="https://x.com/PAYThreeWallet">X</a>
+        <a href="https://paythreewallet.vercel.app">Live site</a>
+        <a href="../README.md">Markdown README</a>
+      </div>
+    </nav>
+
+    <header class="hero" id="top">
+      <img class="banner" src="assets/pay3-banner.png" alt="Pay3 — Delegate. Validate. Execute. MCP-powered finance on Stellar" />
+      <div>
+        <p class="eyebrow">Stellar · MCP · Policy · Zipper</p>
+        <h1>Delegate. Validate. Execute.</h1>
+        <p class="lede">
+          Pay3 is the security layer between AI agents and Stellar payments.
+          You keep Freighter. The AI only spends from a limited jar, under rules you approve.
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="https://paythreewallet.vercel.app">Open dashboard</a>
+          <a class="btn btn-ghost" href="https://pay3.mintlify.site">Docs site</a>
+          <a class="btn btn-ghost" href="https://x.com/PAYThreeWallet">Follow on X</a>
+          <a class="btn btn-ghost" href="WHAT_IS_PAY3.md">Kid-friendly guide</a>
+          <a class="btn btn-ghost" href="https://pay3-api.vercel.app/health">API health</a>
+        </div>
+        <div class="social-row">
+          <a class="social" href="https://pay3.mintlify.site">Docs</a>
+          <a class="social" href="https://x.com/PAYThreeWallet">𝕏 @PAYThreeWallet</a>
+          <a class="social" href="https://github.com/debuuuuuu/PAY3">GitHub</a>
+          <a class="social" href="mailto:pay3wallet@gmail.com">Email</a>
+          <a class="social" href="https://paythreewallet.vercel.app">Website</a>
+        </div>
+        <div class="pill-row">
+          <span class="pill ok">Testnet beta</span>
+          <span class="pill">Hosted MCP</span>
+          <span class="pill">Policy AUTO / APPROVAL / REJECT</span>
+          <span class="pill">Zipper canary</span>
+        </div>
+      </div>
+    </header>
+
+    <section>
+      <h2>At a glance</h2>
+      <div class="grid-2">
+        <article class="card">
+          <strong>Problem</strong>
+          <p>Giving an AI your whole wallet is like handing a robot the house keys. One bad prompt can drain everything.</p>
+        </article>
+        <article class="card">
+          <strong>Solution</strong>
+          <p>Separate AI jar + session hall pass + policy teacher + never-guess contacts. If unsure, Pay3 says <b>no</b>.</p>
+        </article>
+        <article class="card">
+          <strong>Humans</strong>
+          <p>Freighter login, fund jar, contacts, session permissions, approvals, revoke.</p>
+        </article>
+        <article class="card">
+          <strong>Agents</strong>
+          <p>MCP tools: balance, transfer, history, swap quote / execute (opt-in).</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="system">
+      <h2>System design</h2>
+      <p class="muted">Animated diagram (SVG). Same diagram ships in the GitHub README.</p>
+      <div class="panel">
+        <img src="assets/pay3-system.png" alt="Pay3 system design" />
+      </div>
+
+      <h3>Layered view</h3>
+      <div class="arch">
+        <div class="lane">
+          <div class="lane-label">Clients</div>
+          <div class="lane-body">
+            <div class="node"><b>Web</b><span>Next.js + Freighter</span></div>
+            <div class="node"><b>AI</b><span>Cursor / Claude MCP</span></div>
+          </div>
+        </div>
+        <div class="lane">
+          <div class="lane-label">Edge</div>
+          <div class="lane-body">
+            <div class="node"><b>Express API</b><span>Auth · sessions · MCP HTTP</span></div>
+          </div>
+        </div>
+        <div class="lane">
+          <div class="lane-label">Control</div>
+          <div class="lane-body">
+            <div class="node"><b>Policy</b><span>AUTO / APPROVAL / REJECT</span></div>
+            <div class="node"><b>Tx engine</b><span>Idempotency + smart retry</span></div>
+            <div class="node"><b>Recipients</b><span>Never guess</span></div>
+            <div class="node"><b>Soroswap</b><span>Quote / execute</span></div>
+          </div>
+        </div>
+        <div class="lane">
+          <div class="lane-label">Data</div>
+          <div class="lane-body">
+            <div class="node"><b>Neon</b><span>Prisma · AES-GCM vault</span></div>
+          </div>
+        </div>
+        <div class="lane">
+          <div class="lane-label">Chain</div>
+          <div class="lane-body">
+            <div class="node"><b>AI jar G</b><span>Default custody</span></div>
+            <div class="node"><b>Zipper C</b><span>Opt-in canary</span></div>
+            <div class="node"><b>Stellar</b><span>Horizon + Soroban RPC</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="lifecycle">
+      <h2>Request lifecycle</h2>
+      <div class="flow">
+        <div class="step">
+          <div>
+            <strong style="color:#fff">Prove it’s you</strong>
+            <p>Freighter signs a challenge message. Primary key never leaves the wallet.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div>
+            <strong style="color:#fff">Link & fund the jar</strong>
+            <p>Pay3 creates an allocation account (or Zipper C for canary). You send only allowance money.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div>
+            <strong style="color:#fff">Create AI session</strong>
+            <p>Hall pass with expiry, permissions, encrypted session material.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div>
+            <strong style="color:#fff">AI calls MCP</strong>
+            <p>transfer / balance / swap… Bearer token authenticates the session.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div>
+            <strong style="color:#fff">Policy → execute</strong>
+            <p>Resolve recipient → AUTO / APPROVAL / REJECT → transaction engine → Stellar.</p>
+          </div>
+        </div>
+      </div>
+      <p style="margin-top:1rem"><img src="assets/pay3-flow.svg" alt="Flow" style="width:100%;border-radius:14px;border:1px solid var(--line)" /></p>
+    </section>
+
+    <section id="security">
+      <h2>Security house rules</h2>
+      <div class="panel">
+        <table>
+          <thead>
+            <tr><th>Rule</th><th>Why</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Never store primary Freighter key</td><td>Main piggy bank stays yours</td></tr>
+            <tr><td>Never expose session secrets to AI / UI</td><td>Models and browsers are hostile</td></tr>
+            <tr><td>Never guess ambiguous recipients</td><td>Wrong Alex = real loss</td></tr>
+            <tr><td>No financial auto-retry</td><td>Insufficient funds / policy / expiry stay dead</td></tr>
+            <tr><td>Sessions expire + revoke</td><td>Hall passes are temporary</td></tr>
+            <tr><td>Idempotent transfers</td><td>Retries don’t double-pay</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="stack">
+      <h2>Monorepo & stack</h2>
+      <div class="mono-block">apps/web            → Next.js landing + dashboard (GSAP)
+apps/api            → Express trust boundary (money)
+apps/mcp-server     → local stdio MCP
+packages/*          → policy, session, tx, stellar, database
+contracts/smart-account → Zipper / Protocol 27 WASM
+docs/               → guides + this HTML README</div>
+
+      <h3>MCP tools</h3>
+      <div class="panel">
+        <table>
+          <thead><tr><th>Tool</th><th>Type</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td><code>get_balance</code></td><td>Read</td><td>Jar balance</td></tr>
+            <tr><td><code>get_transaction_history</code></td><td>Read</td><td>Recent activity</td></tr>
+            <tr><td><code>transfer</code></td><td>Spend</td><td>Policy + contacts</td></tr>
+            <tr><td><code>get_swap_quote</code></td><td>Read</td><td>Soroswap</td></tr>
+            <tr><td><code>execute_swap</code></td><td>Spend</td><td>Opt-in permission</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Quick start</h3>
+      <div class="mono-block">npm install
+cp .env.example apps/api/.env
+cp .env.example apps/web/.env
+npm run db:generate && npm run db:push
+npm run dev          # :3000
+npm run dev:api      # :4000</div>
+    </section>
+
+    <section>
+      <h2>Live links</h2>
+      <div class="grid-2">
+        <a class="card" href="https://pay3.mintlify.site" style="text-decoration:none;color:inherit">
+          <strong>Docs</strong>
+          <p>pay3.mintlify.site</p>
+        </a>
+        <a class="card" href="https://paythreewallet.vercel.app" style="text-decoration:none;color:inherit">
+          <strong>Website</strong>
+          <p>paythreewallet.vercel.app</p>
+        </a>
+        <a class="card" href="https://pay3-api.vercel.app/health" style="text-decoration:none;color:inherit">
+          <strong>API health</strong>
+          <p>pay3-api.vercel.app/health</p>
+        </a>
+        <a class="card" href="MCP_SETUP.md" style="text-decoration:none;color:inherit">
+          <strong>MCP setup</strong>
+          <p>Wire Cursor / Claude</p>
+        </a>
+        <a class="card" href="ARCHITECTURE.md" style="text-decoration:none;color:inherit">
+          <strong>Architecture.md</strong>
+          <p>Short builder notes</p>
+        </a>
+      </div>
+    </section>
+
+    <footer>
+      <img src="assets/pay3-logo.png" alt="" width="56" height="56" style="border-radius:12px;margin-bottom:0.75rem;border:1px solid var(--line)" />
+      <p><strong style="color:#fff">If unsure, Pay3 says no — that is a feature.</strong></p>
+      <p>
+        <a href="https://pay3.mintlify.site">Docs</a> ·
+        <a href="https://x.com/PAYThreeWallet">X @PAYThreeWallet</a> ·
+        <a href="https://github.com/debuuuuuu/PAY3">GitHub</a> ·
+        <a href="https://paythreewallet.vercel.app">Website</a> ·
+        <a href="mailto:pay3wallet@gmail.com">Contact</a>
+      </p>
+      <p>Full CSS lives here because GitHub strips most stylesheet tags from Markdown READMEs.
+        Source of truth for repo browsing: <a href="../README.md">README.md</a> · story: <a href="WHAT_IS_PAY3.md">WHAT_IS_PAY3.md</a></p>
+    </footer>
+  </div>
+</body>
+</html>

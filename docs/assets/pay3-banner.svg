@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420" role="img" aria-labelledby="title desc">
+  <title id="title">Pay3</title>
+  <desc id="desc">Safe allowance for AI money on Stellar  animated banner</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0d0d0e"/>
+      <stop offset="55%" stop-color="#000000"/>
+      <stop offset="100%" stop-color="#1a1a1c"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="70%" cy="35%" r="45%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="1.2"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="420" fill="url(#bg)"/>
+  <rect width="1200" height="420" fill="url(#glow)"/>
+
+  <!-- grid dots -->
+  <g opacity="0.18" fill="#ffffff">
+    <g id="dots">
+      <circle cx="40" cy="40" r="1.2"/><circle cx="80" cy="40" r="1.2"/><circle cx="120" cy="40" r="1.2"/>
+      <circle cx="40" cy="80" r="1.2"/><circle cx="80" cy="80" r="1.2"/><circle cx="120" cy="80" r="1.2"/>
+    </g>
+    <use href="#dots" x="0" y="0"/>
+    <use href="#dots" x="160" y="0"/><use href="#dots" x="320" y="0"/><use href="#dots" x="480" y="0"/>
+    <use href="#dots" x="640" y="0"/><use href="#dots" x="800" y="0"/><use href="#dots" x="960" y="0"/>
+    <use href="#dots" x="0" y="120"/><use href="#dots" x="160" y="120"/><use href="#dots" x="320" y="120"/>
+    <use href="#dots" x="480" y="120"/><use href="#dots" x="640" y="120"/><use href="#dots" x="800" y="120"/>
+    <use href="#dots" x="960" y="120"/><use href="#dots" x="0" y="240"/><use href="#dots" x="160" y="240"/>
+    <use href="#dots" x="320" y="240"/><use href="#dots" x="480" y="240"/><use href="#dots" x="640" y="240"/>
+    <use href="#dots" x="800" y="240"/><use href="#dots" x="960" y="240"/>
+  </g>
+
+  <!-- brand -->
+  <text x="72" y="118" fill="#ffffff" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" letter-spacing="6" opacity="0.45">STELLAR · MCP · POLICY</text>
+  <text x="68" y="188" fill="#ffffff" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="72" font-weight="700" letter-spacing="-1.5">Pay3</text>
+  <text x="72" y="236" fill="#e4e4e7" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="22" opacity="0.72">Safe allowance for AI money</text>
+  <text x="72" y="272" fill="#8a8a8e" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">big piggy bank stays yours · AI only uses the jar</text>
+
+  <!-- floating coins -->
+  <g>
+    <circle cx="820" cy="90" r="14" fill="#ffffff" opacity="0.9">
+      <animate attributeName="cy" values="90;78;90" dur="3.2s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.55;0.95;0.55" dur="3.2s" repeatCount="indefinite"/>
+    </circle>
+    <text x="820" y="95" text-anchor="middle" fill="#000" font-size="11" font-family="ui-monospace, monospace" font-weight="700">XLM
+      <animate attributeName="y" values="95;83;95" dur="3.2s" repeatCount="indefinite"/>
+    </text>
+    <circle cx="980" cy="130" r="10" fill="#ffffff" opacity="0.55">
+      <animate attributeName="cy" values="130;118;130" dur="2.6s" begin="0.4s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="900" cy="55" r="7" fill="#ffffff" opacity="0.35">
+      <animate attributeName="cy" values="55;45;55" dur="2.1s" begin="0.8s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+
+  <!-- jar -->
+  <g transform="translate(860 165)">
+    <rect x="0" y="0" width="160" height="170" rx="18" fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="2"/>
+    <rect x="28" y="-18" width="104" height="22" rx="6" fill="#1a1a1c" stroke="#ffffff" stroke-opacity="0.4" stroke-width="2"/>
+    <clipPath id="jarClip">
+      <rect x="8" y="8" width="144" height="154" rx="12"/>
+    </clipPath>
+    <g clip-path="url(#jarClip)">
+      <rect x="8" y="90" width="144" height="80" fill="#ffffff" opacity="0.18">
+        <animate attributeName="y" values="110;70;110" dur="4s" repeatCount="indefinite"/>
+        <animate attributeName="height" values="60;100;60" dur="4s" repeatCount="indefinite"/>
+      </rect>
+      <rect x="8" y="90" width="144" height="8" fill="#ffffff" opacity="0.35">
+        <animate attributeName="y" values="110;70;110" dur="4s" repeatCount="indefinite"/>
+      </rect>
+    </g>
+    <text x="80" y="145" text-anchor="middle" fill="#ffffff" font-family="ui-monospace, monospace" font-size="12" opacity="0.7">AI JAR</text>
+  </g>
+
+  <!-- pulse ring around jar -->
+  <circle cx="940" cy="250" r="110" fill="none" stroke="#ffffff" stroke-opacity="0.12" stroke-width="1">
+    <animate attributeName="r" values="100;128;100" dur="3.5s" repeatCount="indefinite"/>
+    <animate attributeName="stroke-opacity" values="0.22;0.04;0.22" dur="3.5s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- bottom rule -->
+  <line x1="72" y1="330" x2="520" y2="330" stroke="#ffffff" stroke-opacity="0.15" stroke-width="1"/>
+  <text x="72" y="362" fill="#8a8a8e" font-family="ui-monospace, monospace" font-size="13">paythreewallet.vercel.app</text>
+
+  <!-- cursor blink -->
+  <rect x="72" y="300" width="10" height="18" fill="#ffffff" opacity="0.8">
+    <animate attributeName="opacity" values="0.8;0;0.8" dur="1.1s" repeatCount="indefinite"/>
+  </rect>
+  <text x="90" y="314" fill="#ffffff" font-family="ui-monospace, monospace" font-size="14" opacity="0.55">pay Alice 1 XLM</text>
+</svg>

@@ -1,0 +1,42 @@
+name: smart-account
+
+on:
+  push:
+    paths:
+      - "contracts/smart-account/**"
+      - ".github/workflows/smart-account.yml"
+  pull_request:
+    paths:
+      - "contracts/smart-account/**"
+      - ".github/workflows/smart-account.yml"
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: contracts/smart-account
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32v1-none
+          components: clippy, rustfmt
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: contracts/smart-account
+
+      - name: cargo fmt
+        run: cargo fmt --check
+
+      - name: cargo clippy
+        run: cargo clippy --all-targets -- -D warnings
+
+      - name: cargo test
+        run: cargo test

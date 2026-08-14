@@ -1,0 +1,36 @@
+{
+  "name": "@pay3/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "smoke:qr": "tsx src/qr-login-selfcheck.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.18.0",
+    "@pay3/database": "*",
+    "@pay3/shared": "*",
+    "@pay3/stellar": "*",
+    "@pay3/recipient-resolver": "*",
+    "@pay3/session-manager": "*",
+    "@pay3/policy-engine": "*",
+    "@pay3/transaction-engine": "*",
+    "@stellar/stellar-sdk": "^14.0.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.9",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/node": "^26.1.1",
+    "tsx": "^4.20.5",
+    "typescript": "^6.0.3"
+  }
+}

@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="220" viewBox="0 0 1000 220" role="img" aria-labelledby="t d">
+  <title id="t">How Pay3 works</title>
+  <desc id="d">You keep the big wallet. AI spends from a small jar with rules.</desc>
+  <rect width="1000" height="220" rx="16" fill="#0d0d0e"/>
+  <rect x="1" y="1" width="998" height="218" rx="15" fill="none" stroke="#ffffff" stroke-opacity="0.12"/>
+
+  <!-- nodes -->
+  <g font-family="system-ui, -apple-system, Segoe UI, sans-serif">
+    <g transform="translate(50 55)">
+      <rect width="150" height="110" rx="14" fill="#1a1a1c" stroke="#ffffff" stroke-opacity="0.25"/>
+      <text x="75" y="48" text-anchor="middle" fill="#ffffff" font-size="15" font-weight="600">You</text>
+      <text x="75" y="74" text-anchor="middle" fill="#8a8a8e" font-size="12">Freighter</text>
+      <circle cx="75" cy="92" r="4" fill="#ffffff">
+        <animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+
+    <g transform="translate(300 55)">
+      <rect width="150" height="110" rx="14" fill="#1a1a1c" stroke="#ffffff" stroke-opacity="0.25"/>
+      <text x="75" y="48" text-anchor="middle" fill="#ffffff" font-size="15" font-weight="600">Pay3</text>
+      <text x="75" y="74" text-anchor="middle" fill="#8a8a8e" font-size="12">checks rules</text>
+      <rect x="45" y="88" width="60" height="6" rx="3" fill="#ffffff" opacity="0.35">
+        <animate attributeName="width" values="20;60;20" dur="2.4s" repeatCount="indefinite"/>
+      </rect>
+    </g>
+
+    <g transform="translate(550 55)">
+      <rect width="150" height="110" rx="14" fill="#1a1a1c" stroke="#ffffff" stroke-opacity="0.25"/>
+      <text x="75" y="48" text-anchor="middle" fill="#ffffff" font-size="15" font-weight="600">AI jar</text>
+      <text x="75" y="74" text-anchor="middle" fill="#8a8a8e" font-size="12">small pot</text>
+      <rect x="50" y="86" width="50" height="14" rx="3" fill="#ffffff" opacity="0.2">
+        <animate attributeName="height" values="8;18;8" dur="3s" repeatCount="indefinite"/>
+        <animate attributeName="y" values="92;82;92" dur="3s" repeatCount="indefinite"/>
+      </rect>
+    </g>
+
+    <g transform="translate(800 55)">
+      <rect width="150" height="110" rx="14" fill="#1a1a1c" stroke="#ffffff" stroke-opacity="0.25"/>
+      <text x="75" y="48" text-anchor="middle" fill="#ffffff" font-size="15" font-weight="600">Stellar</text>
+      <text x="75" y="74" text-anchor="middle" fill="#8a8a8e" font-size="12">coins move</text>
+      <circle cx="55" cy="94" r="5" fill="#ffffff" opacity="0.8">
+        <animate attributeName="cx" values="55;95;55" dur="2.2s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+  </g>
+
+  <!-- arrows with dash animation -->
+  <g fill="none" stroke="#ffffff" stroke-opacity="0.45" stroke-width="2" stroke-dasharray="6 8">
+    <path d="M200 110 H300">
+      <animate attributeName="stroke-dashoffset" values="0;-28" dur="1.2s" repeatCount="indefinite"/>
+    </path>
+    <path d="M450 110 H550">
+      <animate attributeName="stroke-dashoffset" values="0;-28" dur="1.2s" begin="0.2s" repeatCount="indefinite"/>
+    </path>
+    <path d="M700 110 H800">
+      <animate attributeName="stroke-dashoffset" values="0;-28" dur="1.2s" begin="0.4s" repeatCount="indefinite"/>
+    </path>
+  </g>
+  <g fill="#ffffff" opacity="0.55">
+    <polygon points="292,110 280,104 280,116"/>
+    <polygon points="542,110 530,104 530,116"/>
+    <polygon points="792,110 780,104 780,116"/>
+  </g>
+</svg>

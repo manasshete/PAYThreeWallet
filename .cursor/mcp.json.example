@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "pay3": {
+      "command": "node",
+      "args": ["${workspaceFolder}/apps/mcp-server/dist/index.js"],
+      "env": {
+        "PAY3_API_URL": "http://localhost:4000",
+        "PAY3_MCP_TOKEN": "pay3_PASTE_YOUR_TOKEN_HERE"
+      }
+    }
+  }
+}
