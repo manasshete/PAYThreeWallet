@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { SettingsHeader } from "@/components/dashboard/SettingsHeader";
 import { ConfirmDialog } from "@/components/dashboard/ConfirmDialog";
+import { TelegramApprovals } from "@/components/dashboard/TelegramApprovals";
 import { apiFetch } from "@/lib/api";
 
 import { IS_MAINNET } from "@/lib/network";
@@ -84,6 +85,8 @@ export default function SettingsPage() {
               <code className="text-white/50">GET /demo/x402/insight</code>
             </p>
           </section>
+
+          <TelegramApprovals />
 
           <section
             className="rounded-xl border border-red-500/25 bg-red-500/[0.04] p-6"

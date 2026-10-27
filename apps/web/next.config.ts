@@ -28,6 +28,7 @@ const nextConfig: NextConfig = {
       "usage",
       "mcp",
       "health",
+      "notifications",
     ];
     return routes
       .map((route) => ({
