@@ -24,6 +24,7 @@ model User {
   approvals     ApprovalRequest[]
   usageRecords  UsageRecord[]
   auditLogs     AuditLog[]
+  telegramLink  TelegramLink?
 }
 
 model Wallet {
@@ -168,6 +169,20 @@ model ApprovalRequest {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, status])
+}
+
+// Telegram chat that receives approval prompts. linkCode is the one-time
+// /start payload from the dashboard; chatId is set once the user taps it.
+model TelegramLink {
+  id            String    @id @default(cuid())
+  userId        String    @unique
+  chatId        String?   @unique
+  linkCode      String?   @unique
+  codeExpiresAt DateTime?
+  createdAt     DateTime  @default(now())
+  linkedAt      DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model IdempotencyRecord {

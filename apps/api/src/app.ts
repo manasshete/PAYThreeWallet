@@ -16,6 +16,10 @@ import { mcpRouter } from "./routes/mcp.js";
 import { auditRouter, usageRouter } from "./routes/audit.js";
 import { demoX402Router } from "./routes/demo-x402.js";
 import { handleMcpHttp } from "./mcp-http.js";
+import {
+  telegramSettingsRouter,
+  telegramWebhookRouter,
+} from "./routes/telegram.js";
 
 export function createApp() {
   const app = express();
@@ -53,6 +57,8 @@ export function createApp() {
   app.use("/audit", auditRouter);
   app.use("/usage", usageRouter);
   app.use("/demo/x402", demoX402Router);
+  app.use("/notifications/telegram", telegramSettingsRouter);
+  app.use("/telegram", telegramWebhookRouter);
   // Exact /mcp = Streamable HTTP protocol; /mcp/* = REST used by local stdio MCP
   app.all("/mcp", (req, res) => {
     void handleMcpHttp(req, res);

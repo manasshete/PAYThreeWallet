@@ -22,6 +22,7 @@ import {
 } from "@pay3/stellar";
 import { decryptSecret } from "./crypto.js";
 import { isContractCustody } from "./onchain-session.js";
+import { notifyApprovalRequested } from "./telegram.js";
 import {
   buildSwapTransaction,
   DEFAULT_EXECUTE_SLIPPAGE_BPS,
@@ -312,6 +313,7 @@ export async function executeSwap(input: SwapInput) {
       assetOut,
       amount,
     });
+    void notifyApprovalRequested(input.userId, approval.id);
     return {
       transaction: toTxView(tx),
       policy,

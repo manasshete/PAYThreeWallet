@@ -23,6 +23,7 @@ import {
 } from "@pay3/stellar";
 import { decryptSecret } from "./crypto.js";
 import { isContractCustody } from "./onchain-session.js";
+import { notifyApprovalRequested } from "./telegram.js";
 
 function asRules(json: unknown): SessionPolicyRules | null {
   if (!json || typeof json !== "object") return null;
@@ -458,6 +459,7 @@ export async function executeTransfer(input: TransferInput) {
       approvalId: approval.id,
       custodyMode: contractMode ? "contract" : "legacy",
     });
+    void notifyApprovalRequested(input.userId, approval.id);
     return {
       transaction: toTxView(tx),
       policy,

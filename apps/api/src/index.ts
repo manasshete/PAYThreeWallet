@@ -1,5 +1,6 @@
 import { createApp } from "./app.js";
 import { authBackend, databaseProvider } from "./auth-store.js";
+import { startTelegramPolling } from "./telegram.js";
 
 const app = createApp();
 const port = Number(process.env.PORT ?? 4000);
@@ -18,5 +19,7 @@ if (!process.env.VERCEL) {
     } else {
       console.log(`database: ${databaseProvider() ?? "PostgreSQL"}`);
     }
+    // Local dev has no public URL for the webhook — long-poll instead.
+    if (process.env.TELEGRAM_POLLING === "1") startTelegramPolling();
   });
 }
